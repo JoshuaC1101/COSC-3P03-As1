@@ -79,20 +79,23 @@ public class GA {
 //        System.out.println(Best);
     }
 
-    public void TwoCrossover() {
+    public void SingleCrossover() {
         char[] childA;
         char[] childB;
-        int ParentindexA = Rand.nextInt(chromelength);
-        int ParentindexB = Rand.nextInt(chromelength);
+        char[] parentA;
+        char[] parentB;
+        int ParentindexA = Rand.nextInt(popsize);
+        int ParentindexB = Rand.nextInt(popsize);
+        int ParentCross = Rand.nextInt(chromelength);
 
-
-        if(ParentindexA == ParentindexB){
-            ParentindexB = Rand.nextInt(chromelength);
-        }else{
-            childB = Primary[ParentindexB];
-            childA = Primary[ParentindexA];
-
+        while (ParentindexA == ParentindexB) {
+            ParentindexB = Rand.nextInt(popsize);
         }
+        parentA = Primary[ParentindexB];
+        parentB = Primary[ParentindexA];
+
+
+
 
     }
 
@@ -108,11 +111,11 @@ public class GA {
         int keep;
 
         for(int x = 0; x < popsize/2; x++) {
-            ParentindexA = Rand.nextInt(chromelength);
-            ParentindexB = Rand.nextInt(chromelength);
+            ParentindexA = Rand.nextInt(popsize);
+            ParentindexB = Rand.nextInt(popsize);
             //Creating the int array of 1's or 0's
             while (ParentindexA == ParentindexB) {
-                ParentindexB = Rand.nextInt(chromelength);
+                ParentindexB = Rand.nextInt(popsize);
             }
             parentA = Primary[ParentindexB];
             parentB = Primary[ParentindexA];
@@ -135,6 +138,7 @@ public class GA {
             }
             temp[x] = childB;
             temp[x+1] = childA;
+            overwrite();
         }
     }
 
