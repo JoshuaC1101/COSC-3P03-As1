@@ -11,6 +11,8 @@ public class main {
         Ga.ReadData();
         Ga.generatechom(26);
         Ga.bestGa();
+        Ga.tournmentSelection();
+        Ga.Mutation(0);
     }
 
 }

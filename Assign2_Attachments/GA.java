@@ -4,18 +4,20 @@ import java.io.*;
 
 public class GA {
 
-    int mutorations;
-    int popsize = 1000;
+    int mutartionpercent;
+    int popsize = 100;
     int crate;
-    int Generationsize;
-    int GenLevel;
+    int generationsize = 2;
+    int genLevel ;
     int chromelength = 26;
     Random Rand = new Random(800853);
     String encrypt;
     Scanner Data;
+    int K = 2;
+    int globalindex = 0;
 
     char[][] Primary = new char[popsize][chromelength];
-    char[][] temp;
+    char[][] temp = new char[popsize][chromelength];
     char[] Best;
 
     public void OpenData(){
@@ -61,7 +63,9 @@ public class GA {
 //        System.out.println(best);
         for(int i = 0; i < popsize; i++ ){
             double currnet = Evaluation.fitness(String.copyValueOf(Primary[i]),encrypt);
-//            System.out.println(currnet);
+//            System.out.print(currnet);
+//            System.out.print(" ");
+//            System.out.println(Primary[i]);
             Average = Average + currnet;
             if(best < currnet){
                 best = Evaluation.fitness(String.copyValueOf(Primary[i]),encrypt);
@@ -71,22 +75,122 @@ public class GA {
             }
         }
         Average = (Average/popsize);
-        System.out.println(Average);
-//        System.out.print(Best);
+//        System.out.println("Average" + Average);
+//        System.out.println(Best);
+    }
+
+    public void TwoCrossover() {
+        char[] childA;
+        char[] childB;
+        int ParentindexA = Rand.nextInt(chromelength);
+        int ParentindexB = Rand.nextInt(chromelength);
+
+
+        if(ParentindexA == ParentindexB){
+            ParentindexB = Rand.nextInt(chromelength);
+        }else{
+            childB = Primary[ParentindexB];
+            childA = Primary[ParentindexA];
+
+        }
 
     }
 
-    public void TwoCrossover(){
-    }
-
-    //Swap 50/50 to take betweem Dad or Mom
     public void Uniformcrossover(){
+        char[] childA = new char[chromelength];
+        char[] childB = new char[chromelength];
+        char[] parentA;
+        char[] parentB;
+        int ParentindexA;
+        int ParentindexB;
+        int[] mask = new int[chromelength];
+        int binary;
+        int keep;
+
+        for(int x = 0; x < popsize/2; x++) {
+            ParentindexA = Rand.nextInt(chromelength);
+            ParentindexB = Rand.nextInt(chromelength);
+            //Creating the int array of 1's or 0's
+            while (ParentindexA == ParentindexB) {
+                ParentindexB = Rand.nextInt(chromelength);
+            }
+            parentA = Primary[ParentindexB];
+            parentB = Primary[ParentindexA];
+
+            //Mask Creation
+            for (int i = 0; i < chromelength; i++) {
+                binary = Rand.nextInt(2);
+                mask[i] = binary;
+            }
+            //uniformCrossOver Start
+            for (int j = 0; j < chromelength; j++) {
+                keep = mask[j];
+                if (keep == 1) {
+                    childA[j] = parentA[j];
+                    childB[j] = parentB[j];
+                } else if (keep == 0) {
+                    childB[j] = parentA[j];
+                    childA[j] = parentB[j];
+                }
+            }
+            temp[x] = childB;
+            temp[x+1] = childA;
+        }
     }
 
     public void tournmentSelection(){
+        //Temp Varablies used For Tournment Select
+        char Temp[][] = new char[K][];
+        int tournmentpick;
+        //tourment selection will more forward a winner until the New pop is the same size as OG pop
+        for(int i = 0; i < popsize; i++){
+            //Will do the Tournment Selection Based on Size K
+            for(int j = 0; j < K; j++){
+                tournmentpick = Rand.nextInt(popsize);
+                Temp[j] = Primary[tournmentpick];
+            }
+            //Sorting Change
+            int index = 0 ;
+            for(int k = 0; k < K; k++){
+                if(Evaluation.fitness(String.copyValueOf(Temp[k]),encrypt) < Evaluation.fitness(String.copyValueOf(Temp[index]),encrypt) ){
+                    index = k;
+                }
+            }
+            temp[globalindex] = Temp[index];
+            globalindex++;
+        }
+        overwrite();
     }
 
-    public void RepMuatio(){
+    //Insertion Mutation
+    public void Mutation(int mutartionpercent){
+         int change = Rand.nextInt(100);
+         int indexswap1 = Rand.nextInt(chromelength);
+         int indexswap2 = Rand.nextInt(chromelength);
+         char yimp[];
+         char simp;
+         for(int i = 0; i < popsize; i++){
+             System.out.println(Arrays.toString(Primary[i]));
+             yimp = Primary[i];
+             simp = yimp[indexswap1];
+             yimp[indexswap1] = yimp[indexswap2];
+             yimp[indexswap2] = simp;
+             Primary[i]=yimp;
+             System.out.println(Arrays.toString(Primary[i]));
+         }
+    }
+    public void Generation(int generationsize){
+        for(int i = 0; i < generationsize; i++){
+
+        }
+
+    }
+
+    //Override Method to Keep Primary as Main Gen and temp is the New gen, switch will be moved into primary
+    public void overwrite(){
+        for(int i = 0; i < popsize; i++){
+            Primary[i]=temp[i];
+        }
     }
     //End of Code
 }
